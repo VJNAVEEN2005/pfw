@@ -5,9 +5,12 @@ import address from "../assets/gif/address.gif";
 import mail from '../assets/gif/mail.gif'
 
 const Virtual_card = () => {
+
+  console.log("Hello")
+
   return (
     <>
-      <div className=" flex mx-4 my-8 flex-col">
+      <div className=" flex mx-4 my-4 rounded-2xl flex-col bg-green-100">
         <div className=" flex justify-center mt-10 w-full">
           <img className=" w-44" src={logo} alt="" />
         </div>
