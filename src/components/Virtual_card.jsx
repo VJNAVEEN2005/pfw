@@ -2,11 +2,10 @@ import React from "react";
 import logo from "../assets/image/logo.png";
 import phone from "../assets/gif/phone.gif";
 import address from "../assets/gif/address.gif";
-import mail from '../assets/gif/mail.gif'
+import mail from "../assets/gif/mail.gif";
 
 const Virtual_card = () => {
-
-  console.log("Hello")
+  console.log("Hello");
 
   return (
     <>
@@ -76,10 +75,13 @@ const Virtual_card = () => {
                 <div className=" flex">Mail : pondyfoodworld@gmail.com</div>
               </div>
             </div>
-      </div>
-    </div>
+          </div>
+        </div>
 
-        
+        <div className=" w-full flex justify-center mt-6">
+          <button className=" p-2 bg-green-500 border-2 hover:scale-110 transition-all border-green-800 rounded-2xl text-white flex items-center gap-1.5"><img src="https://img.icons8.com/?size=100&id=83159&format=png&color=ffffff" className=" w-4" alt="" />Add To Phone Book</button>
+        </div>
+
       </div>
     </>
   );
