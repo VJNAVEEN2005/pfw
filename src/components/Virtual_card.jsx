@@ -3,9 +3,14 @@ import logo from "../assets/image/logo.png";
 import phone from "../assets/gif/phone.gif";
 import address from "../assets/gif/address.gif";
 import mail from "../assets/gif/mail.gif";
+import Product_card from "./Product_card";
+import productCard from "../data/product";
+import qr from "../assets/image/qr.jpeg";
+import copy from "../assets/gif/copy.gif";
+import websiteqr from "../assets/image/websiteqr.png";
 
 const Virtual_card = () => {
-  const Specialities = [
+  const specialities = [
     `lorem dsfd gdkfns knfs `,
     `ljfshf shfsl  fsf `,
     `k ljf  fsfs;fs `,
@@ -123,8 +128,8 @@ const Virtual_card = () => {
           <div className=" font-semibold text-xl">Our Specification :</div>
           <div>
             <ul className=" text-lg">
-              {Specialities.map((item) => (
-                <li>- {item}</li>
+              {specialities.map((item, index) => (
+                <li key={index}>- {item}</li>
               ))}
             </ul>
           </div>
@@ -134,7 +139,7 @@ const Virtual_card = () => {
 
         {/* product/service */}
 
-        <div className="w-full flex justify-center">
+        <div className="w-full flex mb-10  justify-center">
           <div>
             <div className=" mt-10 text-2xl font-bold">Product</div>
             <hr />
@@ -143,19 +148,195 @@ const Virtual_card = () => {
 
         {/* card */}
 
+        <div className=" flex w-full flex-col items-center justify-center">
+          {productCard.map((data) => (
+            <Product_card
+              image={data.image}
+              title={data.title}
+              detail={data.details}
+            />
+          ))}
+        </div>
+
+        {/* payment */}
+
+        <hr className=" mt-10" />
+
+        <div className="w-full flex mb-10  justify-center">
+          <div>
+            <div className=" mt-10 text-2xl font-bold">Payment</div>
+            <hr />
+          </div>
+        </div>
+
+        <div>
+          <div className=" mx-6 flex justify-center rounded">
+            <table className=" w-[90%] ">
+              <tr className="">
+                <th className=" p-0.5">Payment Number</th>
+                <td className=" p-0.5">: 7200162525</td>
+              </tr>
+              <tr className="">
+                <th className=" p-0.5">G-Pay</th>
+                <td className=" p-0.5">: 7200162525</td>
+              </tr>
+              <tr className="">
+                <th className=" p-0.5">Paytm</th>
+                <td className=" p-0.5">: 7200162525</td>
+              </tr>
+            </table>
+          </div>
+
+          <div className=" mx-6 font-bold text-xl mt-4">Account Details</div>
+
+          <div className=" mx-6 flex justify-center">
+            <table className=" w-[90%] ">
+              <tr className="">
+                <th className=" p-0.5">Bank Name</th>
+                <td className=" p-0.5">: Yes Bank</td>
+              </tr>
+              <tr className="">
+                <th className=" p-0.5">IFSC code</th>
+                <td className=" p-0.5">: 7200162525</td>
+              </tr>
+              <tr className="">
+                <th className=" p-0.5">Account Name</th>
+                <td className=" p-0.5">: 7200162525</td>
+              </tr>
+              <tr className="">
+                <th className=" p-0.5">Account Number</th>
+                <td className=" p-0.5">: 7200162525</td>
+              </tr>
+              <tr className="">
+                <th className=" p-0.5">Account Type</th>
+                <td className=" p-0.5">: CURRENT ACCOUNT</td>
+              </tr>
+            </table>
+          </div>
+
+          <div className=" mx-6">
+            <div>
+              <h1 className=" font-semibold text-lg mt-3">QR Codes:</h1>
+              <div className=" flex justify-center mt-3">
+                <img className="w-[60%] rounded-3xl" src={qr} alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr className=" mt-10" />
+
+        {/* share */}
+
+        <div className=" mt-10 w-full flex justify-center">
+          <div>
+            <div className="text-2xl w-full flex justify-center font-bold">
+              <div>
+                Share
+                <hr />
+              </div>
+            </div>
+
+            <div className=" flex gap-10 shadow-2xl mt-10 py-2 px-4 bg-white rounded-2xl">
+              <div>https://pondyfoodworld.in/</div>
+              <div>
+                <img className=" w-8" src={copy} alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className=" flex flex-col mt-10 items-center w-full">
+          <div className=" text-xl mt-5">Scan To Open The Profile</div>
+          <div className=" mt-5 bg-white p-3 rounded-2xl">
+            <img className=" w-48" src={websiteqr} alt="" />
+          </div>
+          <div className=" flex mt-10 gap-8 flex-row">
+            <div className=" bg-green-500 border border-green-950 hover:scale-110 transition-all flex gap-4 text-white px-4 py-1 text-xl rounded-lg">
+              <img
+                className="w-6"
+                src="https://img.icons8.com/?size=100&id=98959&format=png&color=ffffff"
+                alt=""
+              />
+              <div>Share</div>
+            </div>
+            <div className="bg-green-500 flex gap-4 border border-green-950 text-white px-4 py-1 hover:scale-110 transition-all text-xl rounded-lg">
+              <img
+                className="w-6"
+                src="https://img.icons8.com/?size=100&id=83988&format=png&color=ffffff"
+                alt=""
+              />
+              <div>Save QR</div>
+            </div>
+          </div>
+
+          <div className=" mt-10">Share profile to any whatsapp number:</div>
+          <div className=" mb-52 mt-3 flex">
+            <input
+              type="number"
+              id="visitors"
+              className=" border border-green-900 bg-white w-44 rounded-l-2xl p-2 text-lg "
+              placeholder=""
+              required
+            />
+            <div className=" flex px-3 items-center rounded-r-2xl gap-2 border border-green-900 bg-green-500">
+              <div>SEND</div>
+              <div>
+                <img
+                  className=" w-6"
+                  src="https://img.icons8.com/?size=100&id=16712&format=png&color=ffffff"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className=" text-white pt-3 fixed justify-evenly rounded-t w-full flex -bottom-2 p-2 bg-green-600 border-t-2 border-green-950  shadow-2xl">
         <div className=" flex flex-col items-center">
-          <div>
-            <img src="" alt="" />
-          </div>
-          <div>Tile</div>
-          <div>
-            <p>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sequi
-              tempore quibusdam adipisci. Voluptatem fuga exercitationem quidem.
-              Odio doloribus accusantium ducimus asperiores? Dolores perferendis
-              tenetur nobis in harum odit iure distinctio.
-            </p>
-          </div>
+          <img
+            className=" w-8"
+            src="https://img.icons8.com/?size=100&id=2797&format=png&color=ffffff"
+            alt=""
+          />
+          <div>Home</div>
+        </div>
+
+        <div className=" flex flex-col items-center">
+          <img
+            className=" w-8"
+            src="https://img.icons8.com/?size=100&id=7694&format=png&color=ffffff"
+            alt=""
+          />
+          <div>About Us</div>
+        </div>
+
+        <div className=" flex flex-col items-center">
+          <img
+            className=" w-8"
+            src="https://img.icons8.com/?size=100&id=59867&format=png&color=ffffff"
+            alt=""
+          />
+          <div>Products</div>
+        </div>
+
+        <div className=" flex flex-col items-center">
+          <img
+            className=" w-8"
+            src="https://img.icons8.com/?size=100&id=7994&format=png&color=ffffff"
+            alt=""
+          />
+          <div>Payment</div>
+        </div>
+
+        <div className=" flex flex-col items-center">
+          <img
+            className=" w-8"
+            src="https://img.icons8.com/?size=100&id=98959&format=png&color=ffffff"
+            alt=""
+          />
+          <div>Share</div>
         </div>
       </div>
     </>
