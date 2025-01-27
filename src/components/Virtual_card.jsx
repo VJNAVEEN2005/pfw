@@ -8,6 +8,7 @@ import productCard from "../data/product";
 import qr from "../assets/image/qr.jpeg";
 import copy from "../assets/gif/copy.gif";
 import websiteqr from "../assets/image/websiteqr.png";
+import Payment_test from "./Payment_test";
 
 const Virtual_card = () => {
   const [whatsappNumber, setWhatsappNumber] = useState("");
@@ -248,6 +249,8 @@ const Virtual_card = () => {
             </div>
           </div>
         </div>
+
+        <Payment_test/>
 
         <hr className=" mt-10" />
 
