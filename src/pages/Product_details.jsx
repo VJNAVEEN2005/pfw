@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/image/logo.png";
 import Menu from "../components/Menu";
 import nuts from "../assets/items/nuts.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { productData } from "../data/product";
 
 const Product_details = () => {
  
@@ -10,7 +11,17 @@ const Product_details = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(1);
     const [quantity, setQuantity] = useState(1);
-  
+    const [isData, setIsData] = useState([{}]);
+
+    const {id} = useParams();
+
+    useEffect(() => {
+      if (id) {
+        const filteredData = productData.filter((item) => item.title === id);
+        setIsData(filteredData);
+      }
+    }, [id]);
+
     const options = [
       { id: 0, weight: "250 gm", price: 24, originalPrice: 29, discount: 17 },
       { id: 1, weight: "500 gm", price: 48, originalPrice: 58, discount: 17 },
@@ -33,8 +44,8 @@ const Product_details = () => {
         quantity: quantity,
         totalPrice: selectedItem.price * quantity,
         discount: selectedItem.discount,
-        image: nuts, // Add image reference if needed
-        title: "Title" // Add actual title of product
+        image: isData[0].image, // Add image reference if needed
+        title: isData[0].title // Add actual title of product
       };
   
       // Check if similar item exists (same weight)
@@ -144,13 +155,13 @@ const Product_details = () => {
         <div className=" justify-center flex">
           <img
             className=" border border-gray-300 rounded-xl p-6 "
-            src={nuts}
+            src={isData[0].image}
             alt=""
           />
         </div>
 
         <div className=" mx-4 mb-48">
-          <div className=" text-xl font-bold mt-4">Title</div>
+          <div className=" text-xl font-bold mt-4">{isData[0].title}</div>
 
           <div>
             <div className=" p-4">
@@ -198,9 +209,7 @@ const Product_details = () => {
 
           <div className="font-semibol">Discription</div>
           <div className=" mt-4">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque at
-            veritatis tempore corporis doloremque? Voluptatem, aperiam.
-            Similique voluptas minima eaque!
+           {isData[0].details}
           </div>
 
           <div className=" mt-4 font-semibold">Disclaimer</div>

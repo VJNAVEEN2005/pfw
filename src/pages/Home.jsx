@@ -4,6 +4,7 @@ import nuts from "../assets/items/nuts.png";
 import Product_view_p from "../components/Product_view_p";
 import Product_category_card from "../components/Product_category_card";
 import Menu from "../components/Menu";
+import { productData } from "../data/product";
 
 const Home = () => {
 
@@ -59,10 +60,15 @@ const Home = () => {
           <div className=" font-bold text-xl">Fast Moving Items</div>
 
           <div className=" flex gap-1 w-full overflow-x-scroll">
-            <Product_view_p />
-            <Product_view_p />
-            <Product_view_p />
-            <Product_view_p />
+
+            {
+              productData.map((item)=>(
+                <div>
+                  <Product_view_p title={item.title} op={item.Orginalprice} cp={item.CurrentPrice} />
+                </div>
+              ))
+            }
+
           </div>
         </div>
 

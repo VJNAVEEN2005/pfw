@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Menu from "../components/Menu";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -10,6 +11,7 @@ const Cart = () => {
   const [phone, setPhone] = useState("");
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     // Load cart items from localStorage
@@ -66,6 +68,24 @@ const Cart = () => {
   return (
     <>
       <div className="bg-gray-50 min-h-screen">
+      <div className=" w-full bg-green-500">
+          {/* <div className=" text-white my-2 ml-2">pondy food world</div> */}
+          <hr className=" text-white" />
+          <div className="">
+            <div onClick={()=>setIsMenuOpen(!isMenuOpen)} className=" ml-2 my-2 w-6 hover:cursor-pointer ">
+              <img
+                className=" w-6"
+                src="https://img.icons8.com/?size=100&id=36389&format=png&color=ffffff"
+                alt=""
+              />
+            </div>
+          </div>
+          <div>
+            <Menu isOpen={isMenuOpen}/>
+          </div>
+          <div onClick={()=>setIsMenuOpen(!isMenuOpen)} className={isMenuOpen ? " w-full h-full fixed z-20 bg-black opacity-85 top-0 left-0 transition-all" : "hidden"}>
+          </div>
+        </div>
         {/* Header */}
         <div className="bg-white shadow-sm">
           <div className="max-w-3xl mx-auto px-4 py-4">

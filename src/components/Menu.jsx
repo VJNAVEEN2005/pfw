@@ -11,7 +11,7 @@ const Menu = (props) => {
         className={
           props.isOpen
             ? " w-[75%] h-full z-30 fixed top-0 left-0 transition-all"
-            : "w-[75%] h-full z-30 fixed top-0 -left-100 transition-all"
+            : "w-[75%] h-full z-30 fixed top-0 -left-[100%] transition-all"
         }
       >
         <div className=" h-full bg-white">
