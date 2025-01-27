@@ -7,9 +7,9 @@ const Product_view_p = (props) => {
   const navigate = new useNavigate();
   return (
     <>
-        <div className=" border border-gray-400 rounded-xl scale-[90%] min-w-52 shadow-2xl p-4">
+        <div className=" border border-gray-400 rounded-xl scale-[90%] h-[25rem] w-52 shadow-2xl p-4">
             <img onClick={()=>navigate(`/product/${props.title}`)} className=" w-44 rounded-2xl" src={nuts} alt="" />
-            <div className=" font-semibold mt-3 text-4xl">{props.title}</div>
+            <div className=" font-semibold mt-3 text-xl">{props.title}</div>
             <div className=" w-full flex justify-center">
             <select className=" bg-green-600 w-[90%] px-3 focus:border focus:border-black py-1 text-lg font-bold mt-3 rounded text-white" name="" id="">
               <option value="">1 Kg</option>

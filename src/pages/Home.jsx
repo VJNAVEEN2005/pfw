@@ -7,8 +7,23 @@ import Menu from "../components/Menu";
 import { productData } from "../data/product";
 
 const Home = () => {
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const uniqueCategoriesMap = new Map();
+
+  productData.forEach((item) => {
+    if (!uniqueCategoriesMap.has(item.category)) {
+      uniqueCategoriesMap.set(item.category, {
+        image: item.image,
+        details: item.details,
+        category: item.category,
+      });
+    }
+  });
+
+  const uniqueCategories = Array.from(uniqueCategoriesMap.values());
+
+  console.log(uniqueCategories);
 
   return (
     <>
@@ -17,7 +32,10 @@ const Home = () => {
           {/* <div className=" text-white my-2 ml-2">pondy food world</div> */}
           <hr className=" text-white" />
           <div className="">
-            <div onClick={()=>setIsMenuOpen(!isMenuOpen)} className=" ml-2 my-2 w-6 hover:cursor-pointer ">
+            <div
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className=" ml-2 my-2 w-6 hover:cursor-pointer "
+            >
               <img
                 className=" w-6"
                 src="https://img.icons8.com/?size=100&id=36389&format=png&color=ffffff"
@@ -26,10 +44,16 @@ const Home = () => {
             </div>
           </div>
           <div>
-            <Menu isOpen={isMenuOpen}/>
+            <Menu isOpen={isMenuOpen} />
           </div>
-          <div onClick={()=>setIsMenuOpen(!isMenuOpen)} className={isMenuOpen ? " w-full h-full fixed z-20 bg-black opacity-85 top-0 left-0 transition-all" : "hidden"}>
-          </div>
+          <div
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className={
+              isMenuOpen
+                ? " w-full h-full fixed z-20 bg-black opacity-85 top-0 left-0 transition-all"
+                : "hidden"
+            }
+          ></div>
         </div>
 
         <div className=" mx-4 my-3">
@@ -60,15 +84,15 @@ const Home = () => {
           <div className=" font-bold text-xl">Fast Moving Items</div>
 
           <div className=" flex gap-1 w-full overflow-x-scroll">
-
-            {
-              productData.map((item)=>(
-                <div>
-                  <Product_view_p title={item.title} op={item.Orginalprice} cp={item.CurrentPrice} />
-                </div>
-              ))
-            }
-
+            {productData.map((item) => (
+              <div>
+                <Product_view_p
+                  title={item.title}
+                  op={item.Orginalprice}
+                  cp={item.CurrentPrice}
+                />
+              </div>
+            ))}
           </div>
         </div>
 
@@ -76,10 +100,9 @@ const Home = () => {
           <div className=" text-xl font-semibold">Shop By Category</div>
 
           <div className=" flex flex-col gap-4 mt-5">
-            <Product_category_card />
-            <Product_category_card />
-            <Product_category_card />
-            <Product_category_card />
+            {uniqueCategories.map((category_name) => (
+              <Product_category_card title={category_name.category} details={category_name.details} image={category_name.image} />
+            ))}
           </div>
         </div>
 

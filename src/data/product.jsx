@@ -22,6 +22,7 @@ export const productData = [
     image: nuts,
     Orginalprice: "90",
     CurrentPrice: "70",
+    category: "Dry Fruits and Nuts"
   },
   {
     title: "Fruits",
@@ -29,12 +30,22 @@ export const productData = [
     image: nuts,
     Orginalprice: "300",
     CurrentPrice: "102",
+    category: "Dry Fruits and Nuts"
   },
   {
-    title: "Dates",
+    title: "Rice",
     details: "sjdui howhu wo",
     image: nuts,
     Orginalprice: "432",
     CurrentPrice: "65",
+    category: "Rice"
+  },
+  {
+    title: "Health Mix",
+    details: "sjdui howhu wo",
+    image: nuts,
+    Orginalprice: "432",
+    CurrentPrice: "65",
+    category: "Mix"
   },
 ]
