@@ -1,10 +1,13 @@
 import React from 'react'
 import nuts from '../assets/items/nuts.png'
+import { useNavigate } from 'react-router-dom'
 
 const Product_view_p = () => {
+
+  const navigate = new useNavigate();
   return (
     <>
-        <div className=" border border-gray-400 rounded-xl scale-[90%] min-w-52 shadow-2xl p-4">
+        <div onClick={()=>navigate('/product')} className=" border border-gray-400 rounded-xl scale-[90%] min-w-52 shadow-2xl p-4">
             <img className=" w-44 rounded-2xl" src={nuts} alt="" />
             <div className=" font-semibold mt-3 text-4xl">Title</div>
             <div className=" w-full flex justify-center">
