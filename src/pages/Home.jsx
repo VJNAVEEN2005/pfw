@@ -84,16 +84,17 @@ const Home = () => {
           <div className=" font-bold text-xl">Fast Moving Items</div>
 
           <div className=" flex gap-1 w-full overflow-x-scroll">
-            {productData.map((item) => (
-              <div>
-                <Product_view_p
-                  title={item.title}
-                  op={item.Orginalprice}
-                  cp={item.CurrentPrice}
-                />
-              </div>
-            ))}
-          </div>
+  {productData.map((item, index) => (
+    <div key={index}>
+      <Product_view_p
+        image={item.image}
+        title={item.title}
+        op={item.Orginalprice}
+        cp={item.CurrentPrice}
+      />
+    </div>
+  ))}
+</div>
         </div>
 
         <div className=" mx-[2%] mt-10">

@@ -22,7 +22,8 @@ export const productData = [
     image: nuts,
     Orginalprice: "90",
     CurrentPrice: "70",
-    category: "Dry Fruits and Nuts"
+    category: "Dry Fruits and Nuts",
+    measurement: "500gm"
   },
   {
     title: "Fruits",
@@ -30,7 +31,8 @@ export const productData = [
     image: nuts,
     Orginalprice: "300",
     CurrentPrice: "102",
-    category: "Dry Fruits and Nuts"
+    category: "Dry Fruits and Nuts",
+    measurement: "500gm"
   },
   {
     title: "Rice",
@@ -38,7 +40,8 @@ export const productData = [
     image: nuts,
     Orginalprice: "432",
     CurrentPrice: "65",
-    category: "Rice"
+    category: "Rice",
+    measurement: "500gm"
   },
   {
     title: "Health Mix",
@@ -46,6 +49,7 @@ export const productData = [
     image: nuts,
     Orginalprice: "432",
     CurrentPrice: "65",
-    category: "Mix"
+    category: "Mix",
+    measurement: "500gm"
   },
 ]

@@ -23,53 +23,42 @@ const Product_details = () => {
     }, [id]);
 
     const options = [
-      { id: 0, weight: "250 gm", price: 24, originalPrice: 29, discount: 17 },
-      { id: 1, weight: "500 gm", price: 48, originalPrice: 58, discount: 17 },
-      { id: 2, weight: "100 gm", price: 10, originalPrice: 12, discount: 17 },
-      { id: 3, weight: "1 Kg", price: 95, originalPrice: 114, discount: 18 },
+      { id: 0, weight: "250 gm", price: 24, originalPrice: 30, discount: 20 },
+      { id: 1, weight: "500 gm", price: 48, originalPrice: 60, discount: 20 },
+      { id: 2, weight: "1 kg", price: 95, originalPrice: 120, discount: 21 },
+      { id: 3, weight: "1.5 kg", price: 140, originalPrice: 180, discount: 22 }
     ];
   
     const handleAddToCart = () => {
-      // Get existing cart or initialize empty array
       const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
-      
       const selectedItem = options[selectedOption];
       
-      // Create new cart item
       const newItem = {
-        id: `${selectedItem.weight}-${Date.now()}`, // Unique ID
+        id: `${selectedItem.weight}-${Date.now()}`,
         weight: selectedItem.weight,
         price: selectedItem.price,
         originalPrice: selectedItem.originalPrice,
         quantity: quantity,
         totalPrice: selectedItem.price * quantity,
         discount: selectedItem.discount,
-        image: isData[0].image, // Add image reference if needed
-        title: isData[0].title // Add actual title of product
+        image: isData[0].image,
+        title: isData[0].title
       };
   
-      // Check if similar item exists (same weight)
       const existingItemIndex = existingCart.findIndex(
         item => item.weight === selectedItem.weight
       );
   
       if (existingItemIndex !== -1) {
-        // Update quantity if item exists
         existingCart[existingItemIndex].quantity += quantity;
         existingCart[existingItemIndex].totalPrice = 
           existingCart[existingItemIndex].price * existingCart[existingItemIndex].quantity;
       } else {
-        // Add new item if it doesn't exist
         existingCart.push(newItem);
       }
   
-      // Save updated cart to localStorage
       localStorage.setItem('cart', JSON.stringify(existingCart));
-  
-      // Optional: Reset quantity after adding to cart
       setQuantity(1);
-  
-      // Optional: Show success message or notification
       alert("Added to cart successfully!");
     };
   
@@ -87,7 +76,6 @@ const Product_details = () => {
     <>
       <div className=" bg-white flex w-full flex-col ">
         <div className=" w-full bg-green-500">
-          {/* <div className=" text-white my-2 ml-2">pondy food world</div> */}
           <hr className=" text-white" />
           <div className="">
             <div
@@ -118,7 +106,6 @@ const Product_details = () => {
           <img src={logo} className=" w-28" alt="" />
         </div>
 
-        {/* search */}
         <div className="sticky top-0 py-4 bg-white z-10 border-b shadow-gray-200">
           <div className="mx-[5%] bg-white  flex">
             <input
@@ -136,8 +123,6 @@ const Product_details = () => {
           </div>
         </div>
 
-        {/* back */}
-
         <div className=" w-full flex  items-center">
           <div onClick={()=>navigate("/")} className=" flex items-center  gap-2 ml-4 my-4">
           <div>
@@ -151,7 +136,6 @@ const Product_details = () => {
           </div>
         </div>
 
-        {/* image */}
         <div className=" justify-center flex">
           <img
             className=" border border-gray-300 rounded-xl p-6 "
@@ -207,7 +191,7 @@ const Product_details = () => {
             </div>
           </div>
 
-          <div className="font-semibol">Discription</div>
+          <div className="font-semibold">Description</div>
           <div className=" mt-4">
            {isData[0].details}
           </div>
@@ -218,8 +202,6 @@ const Product_details = () => {
             delectus et, optio quae dolorem vel natus mollitia hic voluptates.
           </div>
         </div>
-
-        {/* bottom */}
 
         <div className="bg-white w-full fixed z-10 shadow-2xl bottom-0 border-t">
         <div className="px-4 py-3">
@@ -264,3 +246,4 @@ const Product_details = () => {
 };
 
 export default Product_details;
+
