@@ -6,88 +6,90 @@ import { useNavigate, useParams } from "react-router-dom";
 import { productData } from "../data/product";
 
 const Product_details = () => {
- 
-    const navigate = useNavigate();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(1);
-    const [quantity, setQuantity] = useState(1);
-    const [isData, setIsData] = useState([{}]);
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(1);
+  const [quantity, setQuantity] = useState(1);
+  const [isData, setIsData] = useState([{}]);
+  const [isDiscount, setIsDiscount] = useState();
+  const grams = [250, 500, 1000, 1500];
+  const grams1 = new Map([
+    [250, 0.5],
+    [500, 1],
+    [1000, 2],
+    [1500, 3],
+  ]);
 
-    const {id} = useParams();
+  const { id } = useParams();
 
-    useEffect(() => {
-      if (id) {
-        const filteredData = productData.filter((item) => item.title === id);
-        setIsData(filteredData);
-      }
-    }, [id]);
-
-    const options = [
-      { id: 0, weight: "250 gm", price: 24, originalPrice: 29, discount: 17 },
-      { id: 1, weight: "500 gm", price: 48, originalPrice: 58, discount: 17 },
-      { id: 2, weight: "100 gm", price: 10, originalPrice: 12, discount: 17 },
-      { id: 3, weight: "1 Kg", price: 95, originalPrice: 114, discount: 18 },
-    ];
-  
-    const handleAddToCart = () => {
-      // Get existing cart or initialize empty array
-      const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
-      
-      const selectedItem = options[selectedOption];
-      
-      // Create new cart item
-      const newItem = {
-        id: `${selectedItem.weight}-${Date.now()}`, // Unique ID
-        weight: selectedItem.weight,
-        price: selectedItem.price,
-        originalPrice: selectedItem.originalPrice,
-        quantity: quantity,
-        totalPrice: selectedItem.price * quantity,
-        discount: selectedItem.discount,
-        image: isData[0].image, // Add image reference if needed
-        title: isData[0].title // Add actual title of product
-      };
-  
-      // Check if similar item exists (same weight)
-      const existingItemIndex = existingCart.findIndex(
-        item => item.weight === selectedItem.weight
+  useEffect(async () => {
+    if (id) {
+      const filteredData = await productData.filter(
+        (item) => item.title === id
       );
-  
-      if (existingItemIndex !== -1) {
-        // Update quantity if item exists
-        existingCart[existingItemIndex].quantity += quantity;
-        existingCart[existingItemIndex].totalPrice = 
-          existingCart[existingItemIndex].price * existingCart[existingItemIndex].quantity;
-      } else {
-        // Add new item if it doesn't exist
-        existingCart.push(newItem);
-      }
-  
-      // Save updated cart to localStorage
-      localStorage.setItem('cart', JSON.stringify(existingCart));
-  
-      // Optional: Reset quantity after adding to cart
-      setQuantity(1);
-  
-      // Optional: Show success message or notification
-      alert("Added to cart successfully!");
+      setIsData(filteredData);
+      const dis =
+        (filteredData[0].CurrentPrice / filteredData[0].Orginalprice) * 100;
+      setIsDiscount(dis.toFixed(2));
+    }
+  }, [id]);
+
+  const options = [
+    { id: 0, weight: "250 gm", price: 24, originalPrice: 30, discount: 20 },
+    { id: 1, weight: "500 gm", price: 48, originalPrice: 60, discount: 20 },
+    { id: 2, weight: "1 kg", price: 95, originalPrice: 120, discount: 21 },
+    { id: 3, weight: "1.5 kg", price: 140, originalPrice: 180, discount: 22 },
+  ];
+
+  const handleAddToCart = () => {
+    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const selectedItem = options[selectedOption];
+
+    const newItem = {
+      id: `${isData[0].title}-${Date.now()}`,
+      weight: Number(selectedOption),
+      price: Number(Number(isData[0].CurrentPrice)*selectedOption).toFixed(2),
+      originalPrice: Number(Number(isData[0].Orginalprice)*selectedOption).toFixed(2),
+      quantity: quantity,
+      totalPrice: (Number(isData[0].CurrentPrice*selectedOption) * quantity).toFixed(2),
+      orginaltotalPrice:(Number(isData[0].Orginalprice*selectedOption) * quantity).toFixed(2),
+      discount: isDiscount,
+      image: isData[0].image,
+      title: isData[0].title,
     };
-  
-    const handleIncrement = () => {
-      setQuantity((prev) => prev + 1);
-    };
-  
-    const handleDecrement = () => {
-      if (quantity > 1) {
-        setQuantity((prev) => prev - 1);
-      }
-    };
+
+    const existingItemIndex = existingCart.findIndex(
+      (item) => item.weight === selectedItem.weight
+    );
+
+    if (existingItemIndex !== -1) {
+      existingCart[existingItemIndex].quantity += quantity;
+      existingCart[existingItemIndex].totalPrice =
+        existingCart[existingItemIndex].price *
+        existingCart[existingItemIndex].quantity;
+    } else {
+      existingCart.push(newItem);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(existingCart));
+    setQuantity(1);
+    alert("Added to cart successfully!");
+  };
+
+  const handleIncrement = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
+  };
 
   return (
     <>
       <div className=" bg-white flex w-full flex-col ">
         <div className=" w-full bg-green-500">
-          {/* <div className=" text-white my-2 ml-2">pondy food world</div> */}
           <hr className=" text-white" />
           <div className="">
             <div
@@ -118,7 +120,6 @@ const Product_details = () => {
           <img src={logo} className=" w-28" alt="" />
         </div>
 
-        {/* search */}
         <div className="sticky top-0 py-4 bg-white z-10 border-b shadow-gray-200">
           <div className="mx-[5%] bg-white  flex">
             <input
@@ -136,22 +137,22 @@ const Product_details = () => {
           </div>
         </div>
 
-        {/* back */}
-
         <div className=" w-full flex  items-center">
-          <div onClick={()=>navigate("/")} className=" flex items-center  gap-2 ml-4 my-4">
-          <div>
-            <img
-              className=" w-5"
-              src="https://img.icons8.com/?size=100&id=40217&format=png&color=000000"
-              alt=""
-            />
-          </div>
-          <div className=" font-bold text-lg">back</div>
+          <div
+            onClick={() => navigate(-1)}
+            className=" flex items-center  gap-2 ml-4 my-4"
+          >
+            <div>
+              <img
+                className=" w-5"
+                src="https://img.icons8.com/?size=100&id=40217&format=png&color=000000"
+                alt=""
+              />
+            </div>
+            <div className=" font-bold text-lg">back</div>
           </div>
         </div>
 
-        {/* image */}
         <div className=" justify-center flex">
           <img
             className=" border border-gray-300 rounded-xl p-6 "
@@ -165,27 +166,27 @@ const Product_details = () => {
 
           <div>
             <div className=" p-4">
-              {options.map((option) => (
+              {Array.from(grams1).map(([option, value]) => (
                 <div
-                  key={option.id}
+                  key={option}
                   className={`mb-2 p-3 rounded-lg cursor-pointer border ${
-                    selectedOption === option.id
+                    selectedOption === value
                       ? "bg-green-50 border-green-200"
                       : "bg-white border-gray-200"
                   }`}
-                  onClick={() => setSelectedOption(option.id)}
+                  onClick={() => setSelectedOption(value)}
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-700">{option.weight}</span>
+                    <span className="text-gray-700">{value}</span>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">₹{option.price}</span>
+                      <span className="font-medium">₹{(isData[0].CurrentPrice * value).toFixed(2)}</span>
                       <span className="text-gray-500 line-through text-sm">
-                        ₹{option.originalPrice}
+                        ₹{(isData[0].Orginalprice * value).toFixed(2)}
                       </span>
                       <span className="text-red-500 text-sm">
-                        {option.discount}% OFF
+                        {isDiscount}% OFF
                       </span>
-                      {selectedOption === option.id && (
+                      {selectedOption === option && (
                         <svg
                           className="w-5 h-5 text-green-600"
                           fill="none"
@@ -207,10 +208,8 @@ const Product_details = () => {
             </div>
           </div>
 
-          <div className="font-semibol">Discription</div>
-          <div className=" mt-4">
-           {isData[0].details}
-          </div>
+          <div className="font-semibold">Description</div>
+          <div className=" mt-4">{isData[0].details}</div>
 
           <div className=" mt-4 font-semibold">Disclaimer</div>
           <div className=" mt-4">
@@ -219,41 +218,39 @@ const Product_details = () => {
           </div>
         </div>
 
-        {/* bottom */}
-
         <div className="bg-white w-full fixed z-10 shadow-2xl bottom-0 border-t">
-        <div className="px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="space-y-1">
-              <div className="text-gray-500 line-through text-sm">
-                ₹{options[selectedOption].originalPrice}
+          <div className="px-4 py-3">
+            <div className="flex justify-between items-center">
+              <div className="space-y-1">
+                <div className="text-gray-500 line-through text-sm">
+                  ₹{(isData[0].Orginalprice*selectedOption)}
+                </div>
+                <div className="text-lg font-bold text-gray-900">
+                  ₹{(isData[0].CurrentPrice*selectedOption)}
+                </div>
               </div>
-              <div className="text-lg font-bold text-gray-900">
-                ₹{options[selectedOption].price}
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center bg-green-50 rounded-lg border border-green-200">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center bg-green-50 rounded-lg border border-green-200">
+                  <button
+                    onClick={handleDecrement}
+                    className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-l-lg"
+                  >
+                    -
+                  </button>
+                  <span className="px-4 py-1 text-gray-700">{quantity}</span>
+                  <button
+                    onClick={handleIncrement}
+                    className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-r-lg"
+                  >
+                    +
+                  </button>
+                </div>
                 <button
-                  onClick={handleDecrement}
-                  className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-l-lg"
+                  onClick={handleAddToCart}
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700"
                 >
-                  -
+                  Add
                 </button>
-                <span className="px-4 py-1 text-gray-700">{quantity}</span>
-                <button
-                  onClick={handleIncrement}
-                  className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-r-lg"
-                >
-                  +
-                </button>
-              </div>
-              <button 
-                onClick={handleAddToCart}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700"
-              >
-                Add
-              </button>
               </div>
             </div>
           </div>

@@ -1,31 +1,87 @@
-import React from 'react'
-import nuts from '../assets/items/nuts.png'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Product_view_p = (props) => {
+  const navigate = useNavigate();
+  const [selectedWeight, setSelectedWeight] = useState(500); // Default 500gm
+  const [quantity, setQuantity] = useState(1);
 
-  const navigate = new useNavigate();
+  // Convert prices to numbers
+  const originalPrice = parseFloat(props.op);
+  const currentPrice = parseFloat(props.cp);
+  
+  // Calculate discount percentage
+  const discountPercentage = ((originalPrice - currentPrice) / originalPrice * 100).toFixed(0);
+  
+  // Weight options
+  const weightOptions = [
+    { label: '250gm', value: 250 },
+    { label: '500gm', value: 500 },
+    { label: '1kg', value: 1000 },
+    { label: '1.5kg', value: 1500 },
+  ];
+
+  // Calculate price based on weight and quantity
+  const calculatePrice = () => {
+    const pricePerGram = currentPrice / 500; // Original price is for 500gm
+    return (pricePerGram * selectedWeight * quantity).toFixed(2);
+  };
+
   return (
-    <>
-        <div className=" border border-gray-400 rounded-xl scale-[90%] h-[25rem] w-52 shadow-2xl p-4">
-            <img onClick={()=>navigate(`/product/${props.title}`)} className=" w-44 rounded-2xl" src={nuts} alt="" />
-            <div className=" font-semibold mt-3 text-xl">{props.title}</div>
-            <div className=" w-full flex justify-center">
-            <select className=" bg-green-600 w-[90%] px-3 focus:border focus:border-black py-1 text-lg font-bold mt-3 rounded text-white" name="" id="">
-              <option value="">1 Kg</option>
-              <option value="">2 Kg</option>
-              <option value="">3 Kg</option>
-            </select>
-            </div>
-            <div className=" text-gray-400 mt-3">{props.op}</div>
-            <div>{props.cp}</div>
-            <div className=" right-0 relative mt-3 flex w-full justify-end">
-              <div className=" bg-green-600 text-white rounded-l-xl px-3 py-1">Add</div>
-              <div className="bg-green-500 text-white rounded-r-xl px-3 py-1">+</div>
-            </div>
-          </div>
-    </>
-  )
-}
+    <div className="relative border border-gray-400 rounded-xl h-[25rem] w-52 shadow-2xl p-4">
+      {/* Discount badge */}
+      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-md text-sm">
+        {discountPercentage}% OFF
+      </div>
 
-export default Product_view_p
+      <img 
+        onClick={() => navigate(`/product/${props.title}`)} 
+        className="w-44 rounded-2xl cursor-pointer" 
+        src={props.image} 
+        alt={props.title} 
+      />
+      
+      <div className="font-semibold mt-3 text-xl">{props.title}</div>
+
+      {/* Weight selector */}
+      <div className="w-full flex justify-center mt-3">
+        <select 
+          className="bg-green-600 w-[90%] px-3 py-1 text-lg font-bold rounded text-white"
+          value={selectedWeight}
+          onChange={(e) => setSelectedWeight(Number(e.target.value))}
+        >
+          {weightOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Price display */}
+      <div className="mt-3">
+        <span className="text-gray-400 line-through mr-2">₹{originalPrice}</span>
+        <span className="text-lg font-bold text-green-600">₹{calculatePrice()}</span>
+      </div>
+
+      {/* Quantity controls */}
+      <div className="mt-3 flex items-center justify-end gap-2">
+        <button 
+          className="bg-green-600 text-white px-3 py-1 rounded-l-xl"
+          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+        >
+          -
+        </button>
+        <span className="px-2">{quantity}</span>
+        <button 
+          className="bg-green-600 text-white px-3 py-1 rounded-r-xl"
+          onClick={() => setQuantity(quantity + 1)}
+        >
+          +
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Product_view_p;

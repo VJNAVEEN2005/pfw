@@ -21,15 +21,28 @@ const Cart = () => {
   }, []);
 
   const calculateTotals = (items) => {
-    const amount = items.reduce((sum, item) => sum + item.totalPrice, 0);
-    const savings = items.reduce(
-      (sum, item) => sum + (item.originalPrice - item.price) * item.quantity,
+    if (!items || items.length === 0) {
+      setTotalAmount(0);
+      setTotalSavings(0);
+      return;
+    }
+  
+    const totalAmount = items.reduce(
+      (sum, item) => sum + parseFloat(item.totalPrice),
       0
     );
-
-    setTotalAmount(amount);
-    setTotalSavings(savings);
+  
+    const originalAmount = items.reduce(
+      (sum, item) => sum + parseFloat(item.orginaltotalPrice),
+      0
+    );
+  
+    const totalSavings = originalAmount - totalAmount;
+  
+    setTotalAmount(totalAmount);
+    setTotalSavings(totalSavings);
   };
+  
 
   const handleUpdateQuantity = (itemId, newQuantity) => {
     if (newQuantity < 1) return;
