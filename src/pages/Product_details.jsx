@@ -261,3 +261,4 @@ const Product_details = () => {
 };
 
 export default Product_details;
+

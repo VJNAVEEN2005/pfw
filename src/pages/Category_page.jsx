@@ -6,12 +6,26 @@ import { Plus, Minus } from "lucide-react";
 import { productData } from "../data/product";
 
 const ProductCard = ({ product, addToCart }) => {
+<<<<<<< HEAD
   
   const [selectedWeight, setSelectedWeight] = useState(500);
   const [quantity, setQuantity] = useState(1);
 
   const navigate = new useNavigate()
   
+=======
+  const [selectedWeight, setSelectedWeight] = useState(500);
+  const [quantity, setQuantity] = useState(1);
+  
+  // Generate weight options based on 500gm base price
+  const weightOptions = [
+    { value: 250, label: "250 gm" },
+    { value: 500, label: "500 gm" },
+    { value: 1000, label: "1 kg" },
+    { value: 1500, label: "1.5 kg" },
+  ];
+
+>>>>>>> a6da3a8ffe8429c72b0f891c3d3e11582e96470c
   const calculatePrice = () => {
     const basePrice = parseFloat(product.CurrentPrice);
     return ((basePrice / 500) * selectedWeight * quantity).toFixed(2);
@@ -28,9 +42,13 @@ const ProductCard = ({ product, addToCart }) => {
 
   return (
     <div className="flex items-center justify-between p-4 border-b border-gray-200">
+<<<<<<< HEAD
       <div onClick={()=>{
         navigate(`/product/${product.title}`)
       }} className="flex items-center gap-4">
+=======
+      <div className="flex items-center gap-4">
+>>>>>>> a6da3a8ffe8429c72b0f891c3d3e11582e96470c
         <div className="relative">
           <div className="w-16 h-16 bg-amber-100 rounded-full overflow-hidden flex items-center justify-center">
             <img
@@ -42,9 +60,40 @@ const ProductCard = ({ product, addToCart }) => {
         </div>
 
         <div className="flex flex-col">
+<<<<<<< HEAD
           <div className=" flex gap-3 items-center">
           <h3 className="text-sm font-medium text-gray-900">{product.title}</h3>
           <h2 className=" text-gray-700 text-xs">{product.measurement}</h2>
+=======
+          <h3 className="text-sm font-medium text-gray-900">{product.title}</h3>
+          <div className="flex items-center gap-2 my-1">
+            <select
+              className="border rounded px-2 py-1 text-sm"
+              value={selectedWeight}
+              onChange={(e) => setSelectedWeight(Number(e.target.value))}
+            >
+              {weightOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <div className="flex items-center bg-gray-100 rounded">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="px-2 py-1 hover:bg-gray-200"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="px-2">{quantity}</span>
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="px-2 py-1 hover:bg-gray-200"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+>>>>>>> a6da3a8ffe8429c72b0f891c3d3e11582e96470c
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-500 line-through">
