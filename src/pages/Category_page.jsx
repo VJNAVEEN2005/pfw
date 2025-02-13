@@ -4,6 +4,8 @@ import Menu from "../components/Menu";
 import logo from "../assets/image/logo.png";
 import { Plus, Minus } from "lucide-react";
 import { productData } from "../data/product";
+import axios from "axios";
+
 
 const ProductCard = ({ product, addToCart }) => {
   
@@ -29,7 +31,7 @@ const ProductCard = ({ product, addToCart }) => {
   return (
     <div className="flex items-center justify-between p-4 border-b border-gray-200">
       <div onClick={()=>{
-        navigate(`/product/${product.title}`)
+        navigate(`/product/${product._id}`)
       }} className="flex items-center gap-4">
         <div className="relative">
           <div className="w-16 h-16 bg-amber-100 rounded-full overflow-hidden flex items-center justify-center">
@@ -77,13 +79,30 @@ const Category_page = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isData, setIsData] = useState([]);
-
+  const [productsApi , setProductsApi] = useState([])
+  
   useEffect(() => {
-    if (id) {
-      const filteredData = productData.filter((item) => item.category === id);
+    const getData = async () => {
+      try {
+        const res = await axios.get("https://mini-ecom-api.vercel.app/api/v1/products");
+        console.log("Fetched Products:", res.data.products);
+        setProductsApi(res.data.products); // Store API data in state
+      } catch (err) {
+        console.error("Axios Error:", err);
+      }
+    };
+  
+    getData();
+  }, []); // Run only once when the component mounts
+  
+  useEffect(() => {
+    if (id && productsApi.length > 0) {
+      const filteredData = productsApi.filter((item) => item.category === id);
+      console.log("Filtered Products:", filteredData);
       setIsData(filteredData);
     }
-  }, [id]);
+  }, [id, productsApi]);
+
 
   const handleAddToCart = (item) => {
     const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');

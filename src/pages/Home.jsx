@@ -1,17 +1,36 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import logo from "../assets/image/logo.png";
 import nuts from "../assets/items/nuts.png";
 import Product_view_p from "../components/Product_view_p";
 import Product_category_card from "../components/Product_category_card";
 import Menu from "../components/Menu";
 import { productData } from "../data/product";
+import axios from "axios";
 
 const Home = () => {
+
+  const [productsApi , setProductsApi] = useState([])
+  
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get("https://mini-ecom-api.vercel.app/api/v1/products");
+        setProductsApi(res.data.products); // Store API data in state
+      } catch (err) {
+        console.error("Axios Error:", err);
+      }
+    };
+
+    getData(); // Call function inside useEffect
+  }, []);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const uniqueCategoriesMap = new Map();
 
-  productData.forEach((item) => {
+  const filteredData = productsApi.filter(item => ["Nuts", "Fruits"].includes(item.title));
+
+  productsApi.forEach((item) => {
     if (!uniqueCategoriesMap.has(item.category)) {
       uniqueCategoriesMap.set(item.category, {
         image: item.image,
@@ -23,7 +42,7 @@ const Home = () => {
 
   const uniqueCategories = Array.from(uniqueCategoriesMap.values());
 
-  console.log(uniqueCategories);
+
 
   return (
     <>
@@ -84,17 +103,18 @@ const Home = () => {
           <div className=" font-bold text-xl">Fast Moving Items</div>
 
           <div className=" flex gap-1 w-full overflow-x-scroll">
-  {productData.map((item, index) => (
-    <div key={index}>
-      <Product_view_p
-        image={item.image}
-        title={item.title}
-        op={item.Orginalprice}
-        cp={item.CurrentPrice}
-      />
-    </div>
-  ))}
-</div>
+            {filteredData.map((item, index) => (
+              <div key={index}>
+                <Product_view_p
+                  image={item.image}
+                  title={item.title}
+                  op={item.Orginalprice}
+                  cp={item.CurrentPrice}
+                  id={item._id}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className=" mx-[2%] mt-10">
@@ -102,7 +122,11 @@ const Home = () => {
 
           <div className=" flex flex-col gap-4 mt-5">
             {uniqueCategories.map((category_name) => (
-              <Product_category_card title={category_name.category} details={category_name.details} image={category_name.image} />
+              <Product_category_card
+                title={category_name.category}
+                details={category_name.details}
+                image={category_name.image}
+              />
             ))}
           </div>
         </div>

@@ -4,6 +4,7 @@ import Menu from "../components/Menu";
 import nuts from "../assets/items/nuts.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { productData } from "../data/product";
+import axios from "axios";
 
 const Product_details = () => {
   const navigate = useNavigate();
@@ -22,17 +23,40 @@ const Product_details = () => {
 
   const { id } = useParams();
 
-  useEffect(async () => {
-    if (id) {
-      const filteredData = await productData.filter(
-        (item) => item.title === id
-      );
-      setIsData(filteredData);
-      const dis =
-        (filteredData[0].CurrentPrice / filteredData[0].Orginalprice) * 100;
-      setIsDiscount(dis.toFixed(2));
+  const [productsApi , setProductsApi] = useState([])
+  
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await axios.get("https://mini-ecom-api.vercel.app/api/v1/products");
+        console.log("Fetched Products:", res.data.products);
+        setProductsApi(res.data.products);
+      } catch (err) {
+        console.error("Axios Error:", err);
+      }
+    };
+  
+    getData();
+  }, []); // Fetches API data on mount
+  
+  useEffect(() => {
+    if (id && productsApi.length > 0) {
+      const filteredData = productsApi.filter((item) => item._id === id);
+      
+      if (filteredData.length > 0) {
+        setIsData(filteredData);
+  
+        // Calculate Discount safely
+        const discount =
+          ((filteredData[0].Orginalprice - filteredData[0].CurrentPrice) /
+            filteredData[0].Orginalprice) *
+          100;
+  
+        setIsDiscount(discount.toFixed(2));
+      }
     }
-  }, [id]);
+  }, [id, productsApi]); // Runs only when `id` or `productsApi` changes
+  
 
   const options = [
     { id: 0, weight: "250 gm", price: 24, originalPrice: 30, discount: 20 },
@@ -42,37 +66,25 @@ const Product_details = () => {
   ];
 
   const handleAddToCart = () => {
-    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const selectedItem = options[selectedOption];
+    // const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    // const selectedItem = options[selectedOption];
 
-    const newItem = {
-      id: `${isData[0].title}-${Date.now()}`,
-      weight: Number(selectedOption),
-      price: Number(Number(isData[0].CurrentPrice)*selectedOption).toFixed(2),
-      originalPrice: Number(Number(isData[0].Orginalprice)*selectedOption).toFixed(2),
-      quantity: quantity,
-      totalPrice: (Number(isData[0].CurrentPrice*selectedOption) * quantity).toFixed(2),
-      orginaltotalPrice:(Number(isData[0].Orginalprice*selectedOption) * quantity).toFixed(2),
-      discount: isDiscount,
-      image: isData[0].image,
-      title: isData[0].title,
-    };
+    console.log(id)
+    console.log(quantity)
 
-    const existingItemIndex = existingCart.findIndex(
-      (item) => item.weight === selectedItem.weight
-    );
-
-    if (existingItemIndex !== -1) {
-      existingCart[existingItemIndex].quantity += quantity;
-      existingCart[existingItemIndex].totalPrice =
-        existingCart[existingItemIndex].price *
-        existingCart[existingItemIndex].quantity;
-    } else {
-      existingCart.push(newItem);
-    }
-
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-    setQuantity(1);
+    axios.post(`https://mini-ecom-api.vercel.app/api/v1/cart`,[{
+      "userId": "67a82f5efa6af9dc70558efe",
+      "cart":[
+    {
+      "productId":String(id),
+      "quantity":Number(quantity)
+    }]
+    }]).then((res)=>{
+      console.log(res)
+    }).catch((err)=>{
+      console.log(err)
+    })
+    
     alert("Added to cart successfully!");
   };
 
@@ -165,7 +177,7 @@ const Product_details = () => {
           <div className=" text-xl font-bold mt-4">{isData[0].title}</div>
 
           <div>
-            <div className=" p-4">
+            {/* <div className=" p-4">
               {Array.from(grams1).map(([option, value]) => (
                 <div
                   key={option}
@@ -205,7 +217,7 @@ const Product_details = () => {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
 
           <div className="font-semibold">Description</div>

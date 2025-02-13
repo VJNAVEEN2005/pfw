@@ -35,7 +35,7 @@ const Product_view_p = (props) => {
       </div>
 
       <img 
-        onClick={() => navigate(`/product/${props.title}`)} 
+        onClick={() => navigate(`/product/${props.id}`)} 
         className="w-44 rounded-2xl cursor-pointer" 
         src={props.image} 
         alt={props.title} 

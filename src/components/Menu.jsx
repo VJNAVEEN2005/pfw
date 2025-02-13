@@ -24,6 +24,8 @@ const Menu = (props) => {
               <hr />
               <li onClick={()=> navigate("/cart")}>Cart</li>
               <hr />
+              <li onClick={()=> navigate("/orders")}>Orders</li>
+              <hr />
               <li>About</li>
               <hr />
               <li

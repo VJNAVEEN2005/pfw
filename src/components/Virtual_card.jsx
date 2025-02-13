@@ -25,9 +25,10 @@ const Virtual_card = () => {
 
   return (
     <>
+      <div className=" flex w-full justify-center">
       <div
         id="home"
-        className=" flex mx-4 my-4  rounded-2xl flex-col bg-green-100"
+        className=" flex mx-4 my-4  rounded-2xl flex-col bg-green-100 max-w-[500px]"
       >
         <div className=" flex justify-center mt-10 w-full">
           <img className=" w-44" src={logo} alt="" />
@@ -250,7 +251,7 @@ const Virtual_card = () => {
           </div>
         </div>
 
-        <Payment_test/>
+        {/* <Payment_test/> */}
 
         <hr className=" mt-10" />
 
@@ -324,7 +325,7 @@ const Virtual_card = () => {
               onChange={(e) => {
                 setWhatsappNumber(e.target.value);
               }}
-              className=" border border-green-900 bg-white w-44 rounded-l-2xl p-2 text-lg "
+              className=" border border-green-900 caret-green-400 bg-white w-44 rounded-l-2xl p-2 text-lg "
               placeholder=""
               required
             />
@@ -401,6 +402,7 @@ const Virtual_card = () => {
             <div>Share</div>
           </div>
         </a>
+      </div>
       </div>
     </>
   );
