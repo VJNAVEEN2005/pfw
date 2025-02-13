@@ -119,14 +119,13 @@ const Cart = () => {
     });
 
     setCartItems(updatedItems);
-    localStorage.setItem("cart", JSON.stringify(updatedItems));
     calculateTotals(updatedItems);
     updateCart(updatedItems)
     console.log(cartItems)
   };
 
   const updateCart = async (updatedItemsNew) => {
-    axios.post(`http://mini-ecom-api.vercel.app/api/v1/updatecart`,{
+    await axios.post(`http://mini-ecom-api.vercel.app/api/v1/updatecart`,{
         "userId": "67a82f5efa6af9dc70558efe",
         "cart": updatedItemsNew
     }).then((res)=>{
