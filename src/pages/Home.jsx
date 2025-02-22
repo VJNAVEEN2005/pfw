@@ -1,33 +1,32 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../assets/image/logo.png";
-import nuts from "../assets/items/nuts.png";
 import Product_view_p from "../components/Product_view_p";
 import Product_category_card from "../components/Product_category_card";
 import Menu from "../components/Menu";
-import { productData } from "../data/product";
 import axios from "axios";
 
 const Home = () => {
+  const [productsApi, setProductsApi] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [productsApi , setProductsApi] = useState([])
-  
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       try {
         const res = await axios.get("https://mini-ecom-api.vercel.app/api/v1/products");
-        setProductsApi(res.data.products); // Store API data in state
+        setProductsApi(res.data.products);
       } catch (err) {
         console.error("Axios Error:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    getData(); // Call function inside useEffect
+    getData();
   }, []);
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const uniqueCategoriesMap = new Map();
-
   const filteredData = productsApi.filter(item => ["Nuts", "Fruits"].includes(item.title));
 
   productsApi.forEach((item) => {
@@ -42,106 +41,136 @@ const Home = () => {
 
   const uniqueCategories = Array.from(uniqueCategoriesMap.values());
 
+  // Simple loading skeleton components
+  const ProductSkeleton = () => (
+    <div className="w-48 shrink-0 bg-white rounded-lg p-4 shadow">
+      <div className="w-full h-32 bg-gray-200 rounded-lg animate-pulse" />
+      <div className="w-3/4 h-4 mt-4 bg-gray-200 rounded animate-pulse" />
+      <div className="flex gap-2 mt-2">
+        <div className="w-16 h-4 bg-gray-200 rounded animate-pulse" />
+        <div className="w-16 h-4 bg-gray-200 rounded animate-pulse" />
+      </div>
+    </div>
+  );
 
+  const CategorySkeleton = () => (
+    <div className="w-full bg-white rounded-lg p-4 shadow">
+      <div className="flex items-center gap-4">
+        <div className="w-24 h-24 bg-gray-200 rounded-lg animate-pulse" />
+        <div className="flex-1">
+          <div className="w-1/2 h-6 bg-gray-200 rounded mb-2 animate-pulse" />
+          <div className="w-3/4 h-4 bg-gray-200 rounded animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <>
-      <div className=" bg-white flex w-full flex-col">
-        <div className=" w-full bg-green-500">
-          {/* <div className=" text-white my-2 ml-2">pondy food world</div> */}
-          <hr className=" text-white" />
-          <div className="">
-            <div
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-green-600 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className=" ml-2 my-2 w-6 hover:cursor-pointer "
+              className="text-white hover:bg-green-700 p-2 rounded-lg"
             >
               <img
-                className=" w-6"
+                className="w-6 h-6"
                 src="https://img.icons8.com/?size=100&id=36389&format=png&color=ffffff"
-                alt=""
+                alt="Menu"
               />
-            </div>
+            </button>
+            <img src={logo} className="w-28" alt="Logo" />
           </div>
-          <div>
-            <Menu isOpen={isMenuOpen} />
-          </div>
-          <div
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={
-              isMenuOpen
-                ? " w-full h-full fixed z-20 bg-black opacity-85 top-0 left-0 transition-all"
-                : "hidden"
-            }
-          ></div>
         </div>
+      </header>
 
-        <div className=" mx-4 my-3">
-          <img src={logo} className=" w-28" alt="" />
-        </div>
+      <Menu isOpen={isMenuOpen} />
+      
+      {/* Overlay */}
+      <div
+        onClick={() => setIsMenuOpen(false)}
+        className={`fixed inset-0 bg-black/50 z-20 transition-opacity ${
+          isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      />
 
-        {/* search */}
-        <div className="sticky top-0 py-4 bg-white z-10 border-b shadow-gray-200">
-          <div className="mx-[5%] bg-white  flex">
+      {/* Search Bar */}
+      <div className="sticky top-0 bg-white shadow-md z-10 py-4">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Search the product"
-              className=" px-2 py-1 text-lg rounded-l-xl border-gray-400 border w-[90%]"
+              placeholder="Search products..."
+              className="flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <div className=" rounded-r-xl border-gray-400  border p-2">
+            <button className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700">
               <img
-                className=" w-7"
-                src="https://img.icons8.com/?size=100&id=7695&format=png&color=000000"
-                alt=""
+                className="w-6 h-6"
+                src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff"
+                alt="Search"
               />
-            </div>
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* product card view */}
-
-        <div className=" mx-[2%] mt-10">
-          <div className=" font-bold text-xl">Fast Moving Items</div>
-
-          <div className=" flex gap-1 w-full overflow-x-scroll">
-            {filteredData.map((item, index) => (
-              <div key={index}>
+      <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+        {/* Fast Moving Items */}
+        <section>
+          <h2 className="text-2xl font-bold mb-4">Fast Moving Items</h2>
+          <div className="flex gap-4 overflow-x-auto pb-4">
+            {isLoading ? (
+              Array(4).fill().map((_, i) => <ProductSkeleton key={i} />)
+            ) : (
+              filteredData.map((item, index) => (
                 <Product_view_p
+                  key={index}
                   image={item.image}
                   title={item.title}
                   op={item.Orginalprice}
                   cp={item.CurrentPrice}
                   id={item._id}
                 />
-              </div>
-            ))}
+              ))
+            )}
           </div>
-        </div>
+        </section>
 
-        <div className=" mx-[2%] mt-10">
-          <div className=" text-xl font-semibold">Shop By Category</div>
-
-          <div className=" flex flex-col gap-4 mt-5">
-            {uniqueCategories.map((category_name) => (
-              <Product_category_card
-                title={category_name.category}
-                details={category_name.details}
-                image={category_name.image}
-              />
-            ))}
+        {/* Shop By Category */}
+        <section>
+          <h2 className="text-2xl font-bold mb-4">Shop By Category</h2>
+          <div className="space-y-4">
+            {isLoading ? (
+              Array(3).fill().map((_, i) => <CategorySkeleton key={i} />)
+            ) : (
+              uniqueCategories.map((category, index) => (
+                <Product_category_card
+                  key={index}
+                  title={category.category}
+                  details={category.details}
+                  image={category.image}
+                />
+              ))
+            )}
           </div>
-        </div>
+        </section>
 
-        <div className=" w-full mt-10 flex-col items-center bg-green-100">
-          <div className=" font-bold text-center mt-10">Contact US</div>
-          <div className=" text-center">Phone : 7200162525</div>
-          <div className=" text-center">Email : pondyfoodworld@gmail.com</div>
-          <div className=" text-center">
-            Address : No. 2A, Ohangara Street, Thirumoolar Nagar, Mudaliarpet,
-            Puducherry - 605004
+        {/* Contact Section */}
+        <section className="bg-green-50 rounded-lg p-8 text-center">
+          <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
+          <div className="space-y-2">
+            <p>Phone: 7200162525</p>
+            <p>Email: pondyfoodworld@gmail.com</p>
+            <p className="max-w-lg mx-auto">
+              Address: No. 2A, Ohangara Street, Thirumoolar Nagar, Mudaliarpet,
+              Puducherry - 605004
+            </p>
           </div>
-        </div>
-      </div>
-    </>
+        </section>
+      </main>
+    </div>
   );
 };
 

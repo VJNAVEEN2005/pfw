@@ -1,276 +1,225 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../assets/image/logo.png";
 import Menu from "../components/Menu";
-import nuts from "../assets/items/nuts.png";
-import { useNavigate, useParams } from "react-router-dom";
-import { productData } from "../data/product";
 import axios from "axios";
+
+const ProductDetailsSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="flex justify-center mb-6">
+      <div className="w-64 h-64 bg-gray-200 rounded-xl" />
+    </div>
+    
+    <div className="mx-4 mb-48">
+      <div className="h-8 bg-gray-200 rounded w-3/4 mb-4" />
+      
+      <div className="space-y-4">
+        <div className="h-4 bg-gray-200 rounded w-1/4" />
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-2/3" />
+        </div>
+        
+        <div className="h-4 bg-gray-200 rounded w-1/4 mt-6" />
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-full" />
+          <div className="h-4 bg-gray-200 rounded w-3/4" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 const Product_details = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(1);
   const [quantity, setQuantity] = useState(1);
   const [isData, setIsData] = useState([{}]);
-  const [isDiscount, setIsDiscount] = useState();
-  const grams = [250, 500, 1000, 1500];
-  const grams1 = new Map([
-    [250, 0.5],
-    [500, 1],
-    [1000, 2],
-    [1500, 3],
-  ]);
-
-  const { id } = useParams();
-
-  const [productsApi , setProductsApi] = useState([])
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDiscount, setIsDiscount] = useState(0);
   
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       try {
         const res = await axios.get("https://mini-ecom-api.vercel.app/api/v1/products");
-        console.log("Fetched Products:", res.data.products);
-        setProductsApi(res.data.products);
+        const filteredData = res.data.products.filter((item) => item._id === id);
+        
+        if (filteredData.length > 0) {
+          setIsData(filteredData);
+          const discount = ((filteredData[0].Orginalprice - filteredData[0].CurrentPrice) / 
+            filteredData[0].Orginalprice) * 100;
+          setIsDiscount(discount.toFixed(2));
+        }
       } catch (err) {
         console.error("Axios Error:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
   
     getData();
-  }, []); // Fetches API data on mount
-  
-  useEffect(() => {
-    if (id && productsApi.length > 0) {
-      const filteredData = productsApi.filter((item) => item._id === id);
-      
-      if (filteredData.length > 0) {
-        setIsData(filteredData);
-  
-        // Calculate Discount safely
-        const discount =
-          ((filteredData[0].Orginalprice - filteredData[0].CurrentPrice) /
-            filteredData[0].Orginalprice) *
-          100;
-  
-        setIsDiscount(discount.toFixed(2));
-      }
-    }
-  }, [id, productsApi]); // Runs only when `id` or `productsApi` changes
-  
-
-  const options = [
-    { id: 0, weight: "250 gm", price: 24, originalPrice: 30, discount: 20 },
-    { id: 1, weight: "500 gm", price: 48, originalPrice: 60, discount: 20 },
-    { id: 2, weight: "1 kg", price: 95, originalPrice: 120, discount: 21 },
-    { id: 3, weight: "1.5 kg", price: 140, originalPrice: 180, discount: 22 },
-  ];
+  }, [id]);
 
   const handleAddToCart = () => {
-    // const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    // const selectedItem = options[selectedOption];
-
-    console.log(id)
-    console.log(quantity)
-
-    axios.post(`https://mini-ecom-api.vercel.app/api/v1/cart`,[{
+    axios.post(`https://mini-ecom-api.vercel.app/api/v1/cart`, [{
       "userId": "67a82f5efa6af9dc70558efe",
-      "cart":[
-    {
-      "productId":String(id),
-      "quantity":Number(quantity)
-    }]
-    }]).then((res)=>{
-      console.log(res)
-    }).catch((err)=>{
-      console.log(err)
+      "cart": [{
+        "productId": String(id),
+        "quantity": Number(quantity)
+      }]
+    }])
+    .then((res) => {
+      alert("Added to cart successfully!");
     })
-    
-    alert("Added to cart successfully!");
-  };
-
-  const handleIncrement = () => {
-    setQuantity((prev) => prev + 1);
-  };
-
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity((prev) => prev - 1);
-    }
+    .catch((err) => {
+      console.error("Failed to add to cart:", err);
+      alert("Failed to add to cart. Please try again.");
+    });
   };
 
   return (
-    <>
-      <div className=" bg-white flex w-full flex-col ">
-        <div className=" w-full bg-green-500">
-          <hr className=" text-white" />
-          <div className="">
-            <div
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-green-600 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className=" ml-2 my-2 w-6 hover:cursor-pointer "
+              className="text-white hover:bg-green-700 p-2 rounded-lg transition-colors"
             >
               <img
-                className=" w-6"
+                className="w-6 h-6"
                 src="https://img.icons8.com/?size=100&id=36389&format=png&color=ffffff"
-                alt=""
+                alt="Menu"
               />
-            </div>
+            </button>
+            <img src={logo} className="w-28" alt="Logo" />
           </div>
-          <div>
-            <Menu isOpen={isMenuOpen} />
-          </div>
-          <div
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={
-              isMenuOpen
-                ? " w-full h-full fixed z-20 bg-black opacity-85 top-0 left-0 transition-all"
-                : "hidden"
-            }
-          ></div>
         </div>
+      </header>
 
-        <div className=" mx-4 my-3">
-          <img src={logo} className=" w-28" alt="" />
-        </div>
+      <Menu isOpen={isMenuOpen} />
+      
+      {/* Overlay */}
+      <div
+        onClick={() => setIsMenuOpen(false)}
+        className={`fixed inset-0 bg-black/50 z-20 transition-opacity ${
+          isMenuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      />
 
-        <div className="sticky top-0 py-4 bg-white z-10 border-b shadow-gray-200">
-          <div className="mx-[5%] bg-white  flex">
+      {/* Search Bar */}
+      <div className="sticky top-0 bg-white shadow-md z-10 py-4">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Search the product"
-              className=" px-2 py-1 text-lg rounded-l-xl border-gray-400 border w-[90%]"
+              placeholder="Search products..."
+              className="flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <div className=" rounded-r-xl border-gray-400  border p-2">
+            <button className="bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition-colors">
               <img
-                className=" w-7"
-                src="https://img.icons8.com/?size=100&id=7695&format=png&color=000000"
-                alt=""
+                className="w-6 h-6"
+                src="https://img.icons8.com/?size=100&id=7695&format=png&color=ffffff"
+                alt="Search"
               />
-            </div>
+            </button>
           </div>
         </div>
+      </div>
 
-        <div className=" w-full flex  items-center">
-          <div
-            onClick={() => navigate(-1)}
-            className=" flex items-center  gap-2 ml-4 my-4"
-          >
-            <div>
-              <img
-                className=" w-5"
-                src="https://img.icons8.com/?size=100&id=40217&format=png&color=000000"
-                alt=""
-              />
-            </div>
-            <div className=" font-bold text-lg">back</div>
-          </div>
-        </div>
-
-        <div className=" justify-center flex">
+      {/* Back Button */}
+      <div className="max-w-7xl mx-auto px-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 my-4 hover:text-green-700 transition-colors"
+        >
           <img
-            className=" border border-gray-300 rounded-xl p-6 "
-            src={isData[0].image}
-            alt=""
+            className="w-5"
+            src="https://img.icons8.com/?size=100&id=40217&format=png&color=000000"
+            alt="Back"
           />
-        </div>
+          <span className="font-bold text-lg">Back</span>
+        </button>
+      </div>
 
-        <div className=" mx-4 mb-48">
-          <div className=" text-xl font-bold mt-4">{isData[0].title}</div>
+      <main className="max-w-7xl mx-auto px-4">
+        {isLoading ? (
+          <ProductDetailsSkeleton />
+        ) : (
+          <>
+            <div className="flex justify-center mb-6">
+              <img
+                className="border border-gray-300 rounded-xl p-6 bg-white shadow-sm hover:shadow-md transition-shadow"
+                src={isData[0].image}
+                alt={isData[0].title}
+              />
+            </div>
 
-          <div>
-            {/* <div className=" p-4">
-              {Array.from(grams1).map(([option, value]) => (
-                <div
-                  key={option}
-                  className={`mb-2 p-3 rounded-lg cursor-pointer border ${
-                    selectedOption === value
-                      ? "bg-green-50 border-green-200"
-                      : "bg-white border-gray-200"
-                  }`}
-                  onClick={() => setSelectedOption(value)}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">{value}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">₹{(isData[0].CurrentPrice * value).toFixed(2)}</span>
-                      <span className="text-gray-500 line-through text-sm">
-                        ₹{(isData[0].Orginalprice * value).toFixed(2)}
-                      </span>
-                      <span className="text-red-500 text-sm">
-                        {isDiscount}% OFF
-                      </span>
-                      {selectedOption === option && (
-                        <svg
-                          className="w-5 h-5 text-green-600"
-                          fill="none"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div> */}
-          </div>
+            <div className="mx-4 mb-48">
+              <h1 className="text-2xl font-bold mt-4 text-gray-900">{isData[0].title}</h1>
 
-          <div className="font-semibold">Description</div>
-          <div className=" mt-4">{isData[0].details}</div>
+              <div className="mt-6">
+                <h2 className="font-semibold text-lg text-gray-900">Description</h2>
+                <p className="mt-2 text-gray-700 leading-relaxed">{isData[0].details}</p>
+              </div>
 
-          <div className=" mt-4 font-semibold">Disclaimer</div>
-          <div className=" mt-4">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quos atque
-            delectus et, optio quae dolorem vel natus mollitia hic voluptates.
-          </div>
-        </div>
+              {/* <div className="mt-6">
+                <h2 className="font-semibold text-lg text-gray-900">Disclaimer</h2>
+                <p className="mt-2 text-gray-700 leading-relaxed">
+                  Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quos atque
+                  delectus et, optio quae dolorem vel natus mollitia hic voluptates.
+                </p>
+              </div> */}
+            </div>
+          </>
+        )}
 
-        <div className="bg-white w-full fixed z-10 shadow-2xl bottom-0 border-t">
-          <div className="px-4 py-3">
+        {/* Bottom Bar */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white shadow-2xl border-t z-10">
+          <div className="max-w-7xl mx-auto px-4 py-3">
             <div className="flex justify-between items-center">
               <div className="space-y-1">
                 <div className="text-gray-500 line-through text-sm">
-                  ₹{(isData[0].Orginalprice*selectedOption)}
+                  ₹{isData[0].Orginalprice}
                 </div>
                 <div className="text-lg font-bold text-gray-900">
-                  ₹{(isData[0].CurrentPrice*selectedOption)}
+                  ₹{isData[0].CurrentPrice}
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex items-center bg-green-50 rounded-lg border border-green-200">
                   <button
-                    onClick={handleDecrement}
-                    className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-l-lg"
+                    onClick={() => quantity > 1 && setQuantity(q => q - 1)}
+                    className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-l-lg transition-colors"
                   >
                     -
                   </button>
                   <span className="px-4 py-1 text-gray-700">{quantity}</span>
                   <button
-                    onClick={handleIncrement}
-                    className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-r-lg"
+                    onClick={() => setQuantity(q => q + 1)}
+                    className="px-3 py-1 text-green-600 text-xl font-medium hover:bg-green-100 rounded-r-lg transition-colors"
                   >
                     +
                   </button>
                 </div>
                 <button
                   onClick={handleAddToCart}
-                  className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700"
+                  className="bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors"
                 >
-                  Add
+                  Add to Cart
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 
 export default Product_details;
-
