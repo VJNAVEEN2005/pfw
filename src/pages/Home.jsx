@@ -27,7 +27,7 @@ const Home = () => {
   }, []);
 
   const uniqueCategoriesMap = new Map();
-  const filteredData = productsApi.filter(item => ["Nuts", "Fruits"].includes(item.title));
+  const filteredData = productsApi.filter(item => ["Ragi", "Kuthiraivalli flakes"].includes(item.title));
 
   productsApi.forEach((item) => {
     if (!uniqueCategoriesMap.has(item.category)) {
