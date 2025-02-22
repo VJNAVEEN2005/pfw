@@ -45,11 +45,18 @@ const CartDisplay = ({ id, quantity }) => {
 
   if (!item) return null;
 
-  const discount = Number(
-    ((item.Orginalprice - item.CurrentPrice) / item.Orginalprice) * 100
-  ).toFixed();
+  // Ensure proper number conversion
+  const originalPrice = Number(item.Orginalprice || 0);
+  const currentPrice = Number(item.CurrentPrice || 0);
+  const quantityNum = Number(quantity || 0);
+  
+  // Calculate discount percentage
+  const discount = originalPrice > 0 
+    ? Number(((originalPrice - currentPrice) / originalPrice) * 100).toFixed(0) 
+    : 0;
 
-  const totalPrice = (item.CurrentPrice * quantity).toFixed(2);
+  // Calculate total price
+  const totalPrice = (currentPrice * quantityNum).toFixed(2);
 
   return (
     <div className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -67,9 +74,9 @@ const CartDisplay = ({ id, quantity }) => {
             <h3 className="font-medium text-gray-900">{item.title}</h3>
             <p className="text-gray-500 text-sm">{item.weight}</p>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-bold text-gray-900">₹{item.CurrentPrice}</span>
+              <span className="font-bold text-gray-900">₹{currentPrice.toFixed(2)}</span>
               <span className="text-gray-500 line-through text-sm">
-                ₹{item.Orginalprice}
+                ₹{originalPrice.toFixed(2)}
               </span>
               <span className="text-red-600 text-sm font-medium bg-red-50 px-2 py-0.5 rounded">
                 {discount}% OFF
